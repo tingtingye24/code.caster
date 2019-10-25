@@ -1,9 +1,14 @@
 // var question;
 
 
-class MainScreen extends Phaser.Scene {
+export default class Round extends Phaser.Scene {
     constructor(){
-        super({key: "MainScreen"});
+        super({key: "Round"});
+    }
+    init(data){
+        this.round = data.round;
+        this.health = data.health;
+        this.score = data.score;
     }
     
     preload(){
@@ -20,7 +25,7 @@ class MainScreen extends Phaser.Scene {
         this.make.text({
             x: 400,
             y: 300,
-            text: 'Welcome to Code.Caster',
+            text: `Round: ${this.round}`,
             origin: { x: 0.5, y: 0.5 },
             style: {
                 font: 'bold 75px Arial',
@@ -40,8 +45,9 @@ class MainScreen extends Phaser.Scene {
             }
         });
         this.input.keyboard.on('keydown', function(event){
-            // this.scene.start('End', {score: 0})
-            this.scene.start('Battle', {level: 'monster1', round: 1, health: 200, score: 0});
+            
+            let currentMonster = 'monster'+this.round
+            currentMonster != 'monster9'? this.scene.start('Battle', {level: currentMonster, round: this.round, health: this.health, score: this.score}): this.scene.start('End');
             
     }, this);
 
@@ -52,4 +58,3 @@ class MainScreen extends Phaser.Scene {
     // }
 
 }
-export default MainScreen

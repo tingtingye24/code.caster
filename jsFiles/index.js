@@ -1,6 +1,7 @@
 
 import MainScreen from './MainScreen.js';
 import Battle from './Battle.js';
+import Round from './Round.js'
 import End from './End.js';
 
 
@@ -18,7 +19,7 @@ const config = {
       enableBody: true
     }
   },
-  scene: [MainScreen, Battle, End]
+  scene: [MainScreen, Battle, Round, End]
   };
   const game = new Phaser.Game(config);
 })
