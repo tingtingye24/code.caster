@@ -47,7 +47,7 @@ export default class Round extends Phaser.Scene {
         this.input.keyboard.on('keydown', function(event){
             
             let currentMonster = 'monster'+this.round
-            currentMonster != 'monster9'? this.scene.start('Battle', {level: currentMonster, round: this.round, health: this.health, score: this.score}): this.scene.start('End');
+            currentMonster != 'monster9'? this.scene.start('Level', {level: currentMonster, round: this.round, health: this.health, score: this.score}): this.scene.start('End');
             
     }, this);
 

@@ -13,6 +13,7 @@ export default class Battle extends Phaser.Scene{
     preload(){
         
         // this.load.json('question', renderQuestion());
+        this.load.audio("battle-music", "assets/battle_music.mp3");
         this.load.image("fire", "assets/fire1.png");
         this.load.image('stone', "assets/stone.png")
         this.load.image("platform","assets/lava_platform.png");
@@ -39,6 +40,8 @@ export default class Battle extends Phaser.Scene{
     }
 
     create() {
+        this.battleMusic = this.sound.add("battle-music");
+        this.battleMusic.play();
         this.fireSound = this.sound.add('fireSound')
         this.rockSound = this.sound.add('rockSound')
         console.log(this.level)
@@ -46,7 +49,7 @@ export default class Battle extends Phaser.Scene{
         this.player2 = this.newPlayer(600, 200, this.level, 0.5);  
         this.player = this.newPlayer(100,300,"wizard", 0.75);
         this.platforms = this.createPlatform(0);
-        this.platform2 = this.createPlatform(550    );
+        this.platform2 = this.createPlatform(550);
         this.scoreText = this.add.text(330, 550, `Score: ${this.score}`, {
             fontSize: "30px",
             fill: "white"
@@ -200,7 +203,7 @@ export default class Battle extends Phaser.Scene{
 
     update(){
         if(this.player2HealthBar.displayWidth < 2){
-            
+            this.battleMusic.stop();
             this.cameras.main.fade(800,0,0,0,false,function(camera, progress){
                 if(progress > 0.9){
                     this.scene.start('Round',{round: this.round+=1, health: this.health, score: this.score});
@@ -209,9 +212,11 @@ export default class Battle extends Phaser.Scene{
             })
         }
         if(this.playerHealthBar.displayWidth <= 2){
+            this.battleMusic.stop();
             this.scene.start("End",{score: this.score});
         }
         if(this.round === 9){
+            this.battleMusic.stop();
             this.scene.start("MainScreen");
 
         }

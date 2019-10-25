@@ -41,7 +41,8 @@ class MainScreen extends Phaser.Scene {
         });
         this.input.keyboard.on('keydown', function(event){
             // this.scene.start('End', {score: 0})
-            this.scene.start('Battle', {level: 'monster1', round: 1, health: 200, score: 0});
+            // this.scene.start('Battle', {level: 'monster1', round: 1, health: 200, score: 0});
+            this.scene.start('Level', {level: 'monster1', round: 1, health: 200, score: 0})
             
     }, this);
 
