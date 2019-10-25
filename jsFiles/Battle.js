@@ -15,7 +15,7 @@ export default class Battle extends Phaser.Scene{
         // this.load.json('question', renderQuestion());
         this.load.image("fire", "assets/fire1.png");
         this.load.image('stone', "assets/stone.png")
-        this.load.image("platform","assets/platform.png");
+        this.load.image("platform","assets/lava_platform.png");
         this.load.image("monster1", "assets/image.png");
         this.load.image("monster2", "assets/frog.png");
         this.load.image("monster3", "assets/snake.png");
@@ -33,30 +33,37 @@ export default class Battle extends Phaser.Scene{
         this.load.image("whitebar", "assets/whitebar.jpg");
         this.fetchQuestions();
 
+        this.load.audio('fireSound', 'assets/fireSoundEFX.mp3')
+        this.load.audio('rockSound', 'assets/rockSoundEFX.mp3')
+
     }
 
     create() {
+        this.fireSound = this.sound.add('fireSound')
+        this.rockSound = this.sound.add('rockSound')
         console.log(this.level)
         this.add.image(400, 300, "castle");
         this.player2 = this.newPlayer(600, 200, this.level, 0.5);  
         this.player = this.newPlayer(100,300,"wizard", 0.75);
-        this.platforms = this.createPlatform();
+        this.platforms = this.createPlatform(0);
+        this.platform2 = this.createPlatform(550    );
         this.scoreText = this.add.text(330, 550, `Score: ${this.score}`, {
             fontSize: "30px",
-            fill: "#000000"
+            fill: "white"
           })
         this.createHealthBars();
         this.physics.add.collider(this.player, this.platforms);
-        this.physics.add.collider(this.player2, this.platforms);
+        this.physics.add.collider(this.player2, this.platform2);
         this.renderQuestionBoard(this.questionObj)
         console.log(this.answer)
         this.clickListener();
     }
 
-    createPlatform(){
+    createPlatform(curX){
         return this.physics.add.staticGroup()
-        .create(225, 590, "platform")
-        .setScale(3, 1.5)
+        .create(curX, 550, "platform")
+        .setOrigin(0,0)
+        // .setScale(, 1)
         .refreshBody();
     }
 
@@ -72,7 +79,7 @@ export default class Battle extends Phaser.Scene{
         this.add.image(549, 549, "whitebar").setOrigin(0, 0).displayWidth = 202;
         this.player2HealthBar = this.add.image(550, 550, "player2HealthBar").setOrigin(0, 0)
         this.playerHealthBar.displayWidth = this.health;
-        this.player2HealthBar.displayWidth = 40;
+        this.player2HealthBar.displayWidth = 200;
     }
     updateHealthBar(clickedvalue){
         this.destroyQuestion();
@@ -140,8 +147,10 @@ export default class Battle extends Phaser.Scene{
         })
     }
     fire(){
+        this.fireSound.play()
         var fires = this.physics.add.group();
         function fireGen() {
+            
             const xCoord = Math.random() * 450 + 400;
           
             fires.create(xCoord, 10, "fire");
@@ -152,9 +161,11 @@ export default class Battle extends Phaser.Scene{
             callbackScope: this,
             repeat: 25
         });
+
     }
 
     rock(){
+        this.rockSound.play()
         var rocks = this.physics.add.group();
         function stoneGen() {
             const xCoord = Math.random() * 350 + 1;
@@ -188,10 +199,14 @@ export default class Battle extends Phaser.Scene{
 
 
     update(){
-        
         if(this.player2HealthBar.displayWidth < 2){
-            this.scene.start('Round',{round: this.round+=1, health: this.health, score: this.score});
-            this.player2HealthBar.displayWidth = 200;
+            
+            this.cameras.main.fade(800,0,0,0,false,function(camera, progress){
+                if(progress > 0.9){
+                    this.scene.start('Round',{round: this.round+=1, health: this.health, score: this.score});
+                    this.player2HealthBar.displayWidth = 200;
+                }
+            })
         }
         if(this.playerHealthBar.displayWidth <= 2){
             this.scene.start("End",{score: this.score});
