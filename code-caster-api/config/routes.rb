@@ -3,4 +3,8 @@ Rails.application.routes.draw do
 
   get '/questions', to: 'questions#index'
   get '/questions/:id', to: 'questions#show'
+
+  get '/users', to: 'users#index'
+  get '/users/topTen', to: 'users#topTen'
+  post '/users', to: 'users#create'
 end
